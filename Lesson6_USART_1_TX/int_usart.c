@@ -17,6 +17,9 @@ signed char USART1_Tx(unsigned char *buffers, unsigned int length)
 	{		
 		break_count = TX_TIMEOUT_COUNT;
 		
+		//waiting loaded data has been transfer to transmit buffer
+		//then we can load with next data into TDR
+		//data in transmit buffer will still need some time to send out
 		while((USART1->ISR & USART_ISR_TXE) == 0)
 		{
 			break_count--;

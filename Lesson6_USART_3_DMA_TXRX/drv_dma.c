@@ -12,12 +12,14 @@ RDMA DMARunTime[MAX_CHANNEL];
 
 void DMA1_Channel2_3_IRQHandler(void)
 {
+	//Is DMA has complete transfer all data
     if(DMA1->ISR & DMA_ISR_TCIF2)
     {
     	//disable interrupt flag
         DMA1->IFCR |= DMA_IFCR_CTCIF2;
         //disable DMA after transfer complete
         DMA1_Channel2->CCR &= ~DMA_CCR_EN;
+        //call application call back function
         if(DMARunTime[CHANNEL2].CallBack)
             (*DMARunTime[CHANNEL2].CallBack)();	
     }
@@ -51,6 +53,7 @@ void DMAConfig(SDMA *dma)
 {
     DMA_Channel_TypeDef *ptr;
 
+	//getting the pointer for right channel
     ptr = DMAPtrGet(dma->Channel);
     if(ptr == 0)
         return;
@@ -58,19 +61,28 @@ void DMAConfig(SDMA *dma)
     if(dma->Config0 & BIT_CONFIG0_TRANSFER)
     {
         //memory to peripheral
+        //set memory address
         ptr->CMAR = dma->SourceAddr;
+        //set peripheral address
         ptr->CPAR = dma->DestinationAddr;
+        //set as memory to peripheral transfer
         ptr->CCR |= DMA_CCR_DIR;
     }
     else
     {
         //peripheral to memory
+        //set peirpheral address
         ptr->CPAR = dma->SourceAddr;
+        //set memory address
         ptr->CMAR = dma->DestinationAddr;
+        //set as peripheral to memory transfer
         ptr->CCR &= ~DMA_CCR_DIR;
     }
+    //set the total of bytes require to be transfer
     ptr->CNDTR = dma->TotalBytes;
+    //set memory size=8bits, dma priority=low, disable memory to memory transfer
     ptr->CCR &= ~(DMA_CCR_PSIZE|DMA_CCR_MSIZE|DMA_CCR_PL|DMA_CCR_MEM2MEM);
+    //enable memory increment and interrupt upon transfer complete
     ptr->CCR |= (DMA_CCR_MINC|DMA_CCR_TCIE);
     
     if(dma->CallBack != NULL)
@@ -81,10 +93,6 @@ void DMAConfig(SDMA *dma)
         NVIC->ISER[0] |= (0x01<<DMA1_Channel2_3_IRQn);
     }
 
-    //temporary testing here
-    USART1->ICR |= USART_ICR_TCCF;
-    USART1->CR3 |= USART_CR3_DMAT;
-	
 	//enable DMA transfer
     ptr->CCR |= DMA_CCR_EN;
 }
@@ -97,6 +105,7 @@ signed int DMAByteRemainGet(unsigned char Channel)
     if(ptr == 0)
         return -1;
 
+	//return the total of byte pending to be send
     return ptr->CNDTR;	
 }
 
@@ -109,6 +118,6 @@ void DMAInit(void)
         DMARunTime[i].CallBack = NULL;
     }	
 	
-    //DMA SFR
+    //Power up DMA block
     RCC->AHBENR |= RCC_AHBENR_DMA1EN;
 }

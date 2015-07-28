@@ -175,10 +175,10 @@ void USARTInit(void)
 	GPIOA->AFR[1] &= ~(GPIO_AFRH_AFR9|GPIO_AFRH_AFR10);
 	GPIOA->AFR[1] |= SFR_AFRH_9_01 | SFR_AFRH_10_01;
 	
-	//Disable Reset USART1 block
+	//disable Reset USART1 block
 	RCC->APB2RSTR &= ~RCC_APB2RSTR_USART1RST;
 	
-	//Enable USART1 block
+	//enable USART1 block
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 	
 	//setting 8 data bits, oversampling of 16
@@ -193,9 +193,12 @@ void USARTInit(void)
 	//enable Transmmit enable
 	USART1->CR1 |= USART_CR1_TE;
 	
-	//Enable receive
+	//enable receive
 	USARTInit_RX();
 	
+	//enable USART DMA-TX
+	USART1->CR3 |= USART_CR3_DMAT;
+
 	//enable USART1
 	USART1->CR1 |= USART_CR1_UE;	
 	

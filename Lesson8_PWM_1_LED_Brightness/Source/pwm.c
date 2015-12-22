@@ -7,35 +7,27 @@
 #include "timer.h"
 #include "pwm.h"
 
-#define TIMER_RELOAD_VALUE			(50)	//x*TIMER_FREQUENCY
-#define TIMER_FREQUENCY				(1000) //(1mSec)
+//#define PWM_PC9_BLINK
 
-/*
-11. Prescaler: TIM14_PSC[15:0]:PSC=480000 (scale to 10ms)
-1. auto-reload register frequency: TIM14_ARR[15:0]:ARR=10 (100ms)
-2. duty cycle: TIM14_CCR1[15:0]=0~10
-3. PWM mode1 -TM14_CCMR1[6:4]:OC1M=110
-4. Enable preload register: TIM14_CCMR1[3]:OC1PE=1
-5. Autorelaod upcounting or center-align: TIM14_CR1[7]:ARPE=1
-x6. Update into shadown register: TIMx_EGR:UG
-x8. Center-aligh mode: TIM1_CR1:CMS:00
-x9. Direction: TIM1_CR1: 0 (upcounter)
-10. Set as Output: TIM14_CCER[3]:CC1NP=0
-7. Active high: TIM14_CCER[1]:CC1P=0
+#ifdef PWM_PC9_BLINK
+	#define TIMER_RELOAD_VALUE			(500)								//x*TIMER_FREQUENCY
+	#define TIMER_FREQUENCY				(1000) 								//(1mSec)
+	#define TIMER_RELOAD_VALUE_ADJUST	(TIMER_RELOAD_VALUE-1)				//offset to get the correct pwm timeout
+	#define PWM_DUTY_CYCLE				(TIMER_RELOAD_VALUE_ADJUST/2)		//Divide by 2, using 50% duty cycle
+#else //#ifdef PWM_PC9_BLINK
+	#define TIMER_RELOAD_VALUE			(10)								//x*TIMER_FREQUENCY
+	#define TIMER_FREQUENCY				(1000) 								//(1mSec)
+	#define TIMER_RELOAD_VALUE_ADJUST	(TIMER_RELOAD_VALUE-1)				//offset to get the correct pwm timeout
+	#define PWM_DUTY_CYCLE				(TIMER_RELOAD_VALUE_ADJUST/2+1)		//Divide by 2, using 50% duty cycle
+#endif //#ifdef PWM_PC9_BLINK
 
----------try-----------------
-1. TIM14_CR1[0]:CEN=1
-7. Active high: TIM14_CCER[0]:CC1E=1
-
-
-*/
 void PWMInit(void)
 {
-	//Enable timer 14 block
+	//Enable timer 14 block	
 	RCC->APB1ENR |= RCC_APB1ENR_TIM14EN;
 	
-	//Divide by 2, using 50% duty cycle
-	TIM14->CCR1 = TIMER_RELOAD_VALUE/2;
+	//Setting PWM duty cycle
+	TIM14->CCR1 = PWM_DUTY_CYCLE;
 	
 	//Configure as PWM mode 1
 	//Signal active when TIMxCNT < TIMx_CCR1
@@ -58,5 +50,5 @@ void PWMInit(void)
 	TIM14->EGR |= TIM_EGR_UG;
 	
 	//Setting PWM timer
-	TimerInit(TIMER_FREQUENCY, TIMER_RELOAD_VALUE);
+	TimerInit(TIMER_FREQUENCY, TIMER_RELOAD_VALUE_ADJUST);
 }

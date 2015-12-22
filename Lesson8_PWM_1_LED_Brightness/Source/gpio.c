@@ -8,8 +8,25 @@
 
 #define MODE_OUTPUT		(GPIO_MODER_MODER9_0)
 
+void OnBoardLEDInit(void)
+{
+	//Enable GPIO_C block
+	RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+	//Configure PC9 as Output
+	GPIOC->MODER &= ~GPIO_MODER_MODER9; 			//mask the bit to 00
+	GPIOC->MODER |= MODE_OUTPUT;					//set the bit
+
+	//Turn on LED
+	GPIOC->ODR |= GPIO_ODR_9;	
+}
+
 void GPIOInit(void)
 {
+	//On board LED: LD3:PC9
+	OnBoardLEDInit();
+	
+	//PWM14, at pin PB1
+	
 	//Enable GPIO_B block
 	RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
 	

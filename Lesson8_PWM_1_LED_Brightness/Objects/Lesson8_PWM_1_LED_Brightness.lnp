@@ -1,11 +1,10 @@
 --cpu Cortex-M0
-".\objects\adc.o"
-".\objects\int_usart.o"
-".\objects\main.o"
-".\objects\systick.o"
 ".\objects\gpio.o"
+".\objects\main.o"
+".\objects\pwm.o"
+".\objects\timer.o"
 ".\objects\startup_stm32f030.o"
 ".\objects\system_stm32f0xx.o"
 --ro-base 0x08000000 --entry 0x08000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list ".\Listings\Lesson7_ADC_xPotentiometer.map" -o .\Objects\Lesson7_ADC_xPotentiometer.axf
+--list ".\Listings\Lesson8_PWM_1_LED_Brightness.map" -o .\Objects\Lesson8_PWM_1_LED_Brightness.axf

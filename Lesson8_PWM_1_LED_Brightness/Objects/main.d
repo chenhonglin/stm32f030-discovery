@@ -5,7 +5,5 @@
 .\objects\main.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.3.0\CMSIS\Include\core_cmInstr.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.3.0\CMSIS\Include\core_cmFunc.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include\system_stm32f0xx.h
-.\objects\main.o: Source\int_usart.h
-.\objects\main.o: Source\systick.h
+.\objects\main.o: Source\pwm.h
 .\objects\main.o: Source\gpio.h
-.\objects\main.o: Source\adc.h

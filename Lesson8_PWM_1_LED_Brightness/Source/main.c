@@ -1,6 +1,6 @@
 
 /*
-	FILE NAME: main.c
+	FILE NAME: main.c	
 */
 
 #include "stm32f0xx.h"			//include file that define all SFR

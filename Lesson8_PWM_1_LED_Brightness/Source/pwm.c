@@ -7,19 +7,19 @@
 #include "timer.h"
 #include "pwm.h"
 
-//#define PWM_PC9_BLINK
+//#define PWM_PB1_BLINK
 
-#ifdef PWM_PC9_BLINK
+#ifdef PWM_PB1_BLINK
 	#define TIMER_RELOAD_VALUE			(500)								//x*TIMER_FREQUENCY
 	#define TIMER_FREQUENCY				(1000) 								//(1mSec)
 	#define TIMER_RELOAD_VALUE_ADJUST	(TIMER_RELOAD_VALUE-1)				//offset to get the correct pwm timeout
 	#define PWM_DUTY_CYCLE				(TIMER_RELOAD_VALUE_ADJUST/2)		//Divide by 2, using 50% duty cycle
-#else //#ifdef PWM_PC9_BLINK
+#else //#ifdef PWM_PB1_BLINK
 	#define TIMER_RELOAD_VALUE			(10)								//x*TIMER_FREQUENCY
 	#define TIMER_FREQUENCY				(1000) 								//(1mSec)
 	#define TIMER_RELOAD_VALUE_ADJUST	(TIMER_RELOAD_VALUE-1)				//offset to get the correct pwm timeout
 	#define PWM_DUTY_CYCLE				(TIMER_RELOAD_VALUE_ADJUST/2+1)		//Divide by 2, using 50% duty cycle
-#endif //#ifdef PWM_PC9_BLINK
+#endif //#ifdef PWM_PB1_BLINK
 
 void PWMInit(void)
 {
